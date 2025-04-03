@@ -1043,7 +1043,7 @@ class ABEUI:
                 self.display_dossier_popup(dossier_id)
 
     def toggle_theme(self):
-        themes = ["light", "dark", "ocean", "sunset"]
+        themes = ["light", "dark", "ocean", "sunset", "minimal"]
         current_index = themes.index(self.theme_mode) if self.theme_mode in themes else 0
         next_index = (current_index + 1) % len(themes)
         self.theme_mode = themes[next_index]
@@ -1053,55 +1053,76 @@ class ABEUI:
     def apply_theme(self):
         style = ttk.Style()
         
-        # Define theme color palettes
+        # Define font settings
+        fonts = {
+            "heading": ("Segoe UI", 12, "bold"),
+            "subheading": ("Segoe UI", 11, "normal"),
+            "body": ("Segoe UI", 10, "normal"),
+            "button": ("Segoe UI", 10, "normal"),
+            "small": ("Segoe UI", 9, "normal")
+        }
+        
+        # Define theme color palettes with modern colors
         themes = {
             "light": {
-                "bg": "#f5f5f7",
-                "fg": "#1d1d1f",
-                "accent": "#0066cc",
-                "secondary": "#e8e8ed",
-                "highlight": "#5ac8fa",
-                "button_bg": "#0066cc",
+                "bg": "#ffffff",
+                "fg": "#333333",
+                "accent": "#4285f4",  # Google Blue
+                "secondary": "#f5f5f5",
+                "highlight": "#34a853",  # Google Green
+                "button_bg": "#4285f4",
                 "button_fg": "white",
-                "entry_bg": "white",
+                "entry_bg": "#ffffff",
                 "even_row": "#ffffff",
-                "odd_row": "#f0f0f5"
+                "odd_row": "#f8f9fa"
             },
             "dark": {
-                "bg": "#1d1d1f",
-                "fg": "#f5f5f7",
-                "accent": "#5ac8fa",
-                "secondary": "#333336",
-                "highlight": "#0066cc",
-                "button_bg": "#5ac8fa",
-                "button_fg": "#1d1d1f",
-                "entry_bg": "#333336",
-                "even_row": "#2c2c2e",
-                "odd_row": "#3a3a3c"
+                "bg": "#121212",  # Material Dark background
+                "fg": "#e0e0e0",
+                "accent": "#bb86fc",  # Material Purple
+                "secondary": "#1e1e1e",
+                "highlight": "#03dac6",  # Material Teal
+                "button_bg": "#bb86fc",
+                "button_fg": "#121212",
+                "entry_bg": "#1e1e1e",
+                "even_row": "#1e1e1e",
+                "odd_row": "#2d2d2d"
             },
             "ocean": {
-                "bg": "#003366",
-                "fg": "#e6f2ff",
-                "accent": "#66ccff",
-                "secondary": "#004d99",
-                "highlight": "#00cccc",
-                "button_bg": "#00cccc",
-                "button_fg": "#003366",
-                "entry_bg": "#004d99",
-                "even_row": "#004080",
-                "odd_row": "#003366"
+                "bg": "#011627",  # Night Owl theme inspired
+                "fg": "#d6deeb",
+                "accent": "#82aaff",
+                "secondary": "#0b2942",
+                "highlight": "#21c7a8",
+                "button_bg": "#82aaff",
+                "button_fg": "#011627",
+                "entry_bg": "#0b2942",
+                "even_row": "#0b2942",
+                "odd_row": "#011627"
             },
             "sunset": {
-                "bg": "#2c1e3f",
-                "fg": "#ffecd9",
-                "accent": "#ff7d5e",
-                "secondary": "#4a3957",
-                "highlight": "#ffc15e",
-                "button_bg": "#ff7d5e",
-                "button_fg": "#2c1e3f",
-                "entry_bg": "#4a3957",
-                "even_row": "#3a2a4d",
-                "odd_row": "#2c1e3f"
+                "bg": "#2d142c",
+                "fg": "#ffefd3",
+                "accent": "#ee4540",
+                "secondary": "#45142c",
+                "highlight": "#f9b208",
+                "button_bg": "#ee4540",
+                "button_fg": "#ffefd3",
+                "entry_bg": "#45142c",
+                "even_row": "#45142c",
+                "odd_row": "#2d142c"
+            },
+            "minimal": {
+                "bg": "#fafafa",
+                "fg": "#424242",
+                "accent": "#212121",
+                "secondary": "#f0f0f0",
+                "highlight": "#757575",
+                "button_bg": "#212121",
+                "button_fg": "#fafafa",
+                "entry_bg": "#ffffff",
+                "even_row": "#ffffff",
+                "odd_row": "#f5f5f5"
             }
         }
         
@@ -1116,17 +1137,33 @@ class ABEUI:
         else:
             style.theme_use('default')
         
-        # Configure styles with color palette
+        # Configure styles with color palette and improved fonts
         style.configure("TFrame", background=colors["bg"])
-        style.configure("TLabel", background=colors["bg"], foreground=colors["fg"])
         
-        # Modern button styling
+        # Label styles with different font sizes
+        style.configure("TLabel", 
+                    background=colors["bg"], 
+                    foreground=colors["fg"],
+                    font=fonts["body"])
+        
+        style.configure("Heading.TLabel", 
+                    background=colors["bg"], 
+                    foreground=colors["fg"],
+                    font=fonts["heading"])
+        
+        style.configure("Subheading.TLabel", 
+                    background=colors["bg"], 
+                    foreground=colors["fg"],
+                    font=fonts["subheading"])
+        
+        # Modern button styling with improved font
         style.configure("TButton", 
                     background=colors["button_bg"], 
                     foreground=colors["button_fg"], 
-                    font=("Segoe UI", 9, "normal"),
+                    font=fonts["button"],
                     borderwidth=0,
-                    padding=6)
+                    padding=8)  # Increased padding for better touch targets
+        
         style.map("TButton",
                 background=[("active", colors["highlight"]), ("pressed", colors["secondary"])],
                 relief=[("pressed", "flat")])
@@ -1137,27 +1174,44 @@ class ABEUI:
                     foreground=colors["fg"],
                     bordercolor=colors["accent"],
                     lightcolor=colors["bg"],
-                    darkcolor=colors["bg"])
+                    darkcolor=colors["bg"],
+                    font=fonts["body"])
         
         style.configure("TCombobox", 
                     fieldbackground=colors["entry_bg"], 
                     foreground=colors["fg"],
-                    arrowcolor=colors["accent"])
+                    arrowcolor=colors["accent"],
+                    font=fonts["body"])
         
         style.map("TCombobox",
                 fieldbackground=[("readonly", colors["entry_bg"])],
                 selectbackground=[("readonly", colors["accent"])],
                 selectforeground=[("readonly", colors["button_fg"])])
         
-        # Text widgets
-        self.log_text.config(bg=colors["entry_bg"], fg=colors["fg"], insertbackground=colors["accent"])
-        self.profil_text.config(bg=colors["entry_bg"], fg=colors["fg"], insertbackground=colors["accent"])
+        # Text widgets with improved font sizes
+        self.log_text.config(
+            bg=colors["entry_bg"], 
+            fg=colors["fg"], 
+            insertbackground=colors["accent"],
+            font=fonts["body"]
+        )
         
-        # Treeview
+        self.profil_text.config(
+            bg=colors["entry_bg"], 
+            fg=colors["fg"], 
+            insertbackground=colors["accent"],
+            font=fonts["body"]
+        )
+        
+        # Treeview with improved fonts
         style.configure("Treeview", 
                     background=colors["bg"],
                     foreground=colors["fg"],
-                    fieldbackground=colors["bg"])
+                    fieldbackground=colors["bg"],
+                    font=fonts["body"])
+        
+        style.configure("Treeview.Heading", 
+                    font=fonts["subheading"])
         
         style.map("Treeview",
                 background=[("selected", colors["accent"])],
@@ -1166,12 +1220,12 @@ class ABEUI:
         self.tree.tag_configure('even', background=colors["even_row"])
         self.tree.tag_configure('odd', background=colors["odd_row"])
         
-        # Add border styling for frames if needed
+        # Add modern card styling for frames
         style.configure("Card.TFrame", 
                     background=colors["secondary"], 
                     relief="flat",
-                    borderwidth=0)
-
+                    borderwidth=0,
+                    padding=10)  # Added padding for better spacing
     # Add this method to initialize the theme system
     def setup_theme_system(self):
         # Add theme selector with modern styling
@@ -1251,17 +1305,22 @@ class ABEUI:
         if not (self.login_email.get() and self.login_password.get()):  # Use the new login fields
             messagebox.showerror("Erreur", "Email et mot de passe requis")
             return
-        
+
         if self.health_system.login(self.login_email.get(), self.login_password.get()):
             messagebox.showinfo("Succès", f"Connecté en tant que {self.health_system.current_role}")
             self.update_actions_visibility()
             self.display_profile()
+            
+            # Switch to the health_tab
+            self.notebook.select(self.health_tab)
         else:
             messagebox.showerror("Erreur", "Email ou mot de passe incorrect")
+
     
     def logout(self):
         self.health_system.logout()
         self.email.set("")
+        self.login_email.set("")
         self.nom.set("")
         self.prenom.set("")
         self.role.set("")
@@ -1285,6 +1344,7 @@ class ABEUI:
         self.activity_log("Déconnexion réussie")
         self.update_actions_visibility()
         messagebox.showinfo("Déconnexion", "Vous avez été déconnecté avec succès.")
+        self.notebook.select(self.login_tab)
 
     def delete_account(self):
         if messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir supprimer votre compte ainsi que toutes les informations associées ? Cette action est irréversible."):
